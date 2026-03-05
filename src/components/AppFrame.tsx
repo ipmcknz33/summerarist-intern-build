@@ -6,8 +6,8 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 
 import Sidebar from "./Sidebar";
-import styles from "./AppFrame.module.css";
 import SearchBar from "@/components/SearchBar";
+import styles from "./AppFrame.module.css";
 
 const PUBLIC_ROUTES = new Set(["/login", "/signup"]);
 
@@ -18,31 +18,23 @@ export default function AppFrame({ children }: { children: ReactNode }) {
   const { user, status } = useSelector((state: RootState) => state.auth);
 
   const isPublic = PUBLIC_ROUTES.has(pathname);
+
   const showSidebar = !!user && !isPublic && pathname !== "/choose-plan";
+  const showSearch = !!user && !isPublic && pathname !== "/choose-plan";
 
   useEffect(() => {
     if (status !== "ready") return;
 
-    
     if (!user) {
-      if (pathname !== "/login" && pathname !== "/signup") {
-        router.replace("/login");
-      }
+      if (!isPublic) router.replace("/login");
       return;
     }
 
-    
-    if (user && isPublic) {
-      router.replace("/for-you");
-    }
-  }, [status, user, pathname, router, isPublic]);
+    if (isPublic) router.replace("/for-you");
+  }, [status, user, isPublic, router]);
 
-  
   if (status !== "ready") return null;
-
- 
   if (!user && !isPublic) return null;
-
 
   return (
     <div className={styles.root}>
@@ -53,7 +45,7 @@ export default function AppFrame({ children }: { children: ReactNode }) {
       )}
 
       <main className={styles.main}>
-        <SearchBar />
+        {showSearch ? <SearchBar /> : null}
         <div>{children}</div>
       </main>
     </div>
