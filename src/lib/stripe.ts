@@ -1,9 +1,7 @@
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, type Stripe } from "@stripe/stripe-js";
 
-const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
 
-if (!key) {
-  console.error("Stripe publishable key missing");
-}
-
-export const stripePromise = loadStripe(key ?? "");
+export const stripePromise: Promise<Stripe | null> = key
+  ? loadStripe(key)
+  : Promise.resolve(null);

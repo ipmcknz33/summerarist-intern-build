@@ -4,14 +4,12 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 
-import Sidebar from "@/components/Sidebar";
 import { stripePromise } from "@/lib/stripe";
 
 import { db } from "@/firebase/config";
 import { addDoc, collection, onSnapshot } from "firebase/firestore";
 
 import homeStyles from "../HomePage.module.css";
-import ui from "./ChoosePlanPage.module.css";
 
 type CheckoutSessionDoc = {
   sessionId?: string;
@@ -25,12 +23,8 @@ export default function ChoosePlanPage() {
   const [loading, setLoading] = useState<"monthly" | "yearly" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const monthlyPriceId = String(
-    process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY ?? "",
-  );
-  const yearlyPriceId = String(
-    process.env.NEXT_PUBLIC_STRIPE_PRICE_YEARLY ?? "",
-  );
+  const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY ?? "";
+  const yearlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_YEARLY ?? "";
 
   async function startCheckout(priceId: string, plan: "monthly" | "yearly") {
     setError(null);
@@ -40,7 +34,7 @@ export default function ChoosePlanPage() {
       return;
     }
 
-    if (!priceId.startsWith("price_")) {
+    if (!priceId) {
       setError("Missing Stripe Price ID in .env.local");
       return;
     }
@@ -73,32 +67,28 @@ export default function ChoosePlanPage() {
           return;
         }
 
+        // Stripe Firebase extension often returns a direct URL (best path)
         if (data.url) {
           unsub();
           window.location.assign(data.url);
           return;
         }
 
+        // Fallback: sessionId -> redirectToCheckout
         if (data.sessionId) {
           unsub();
 
-          const stripe = (await stripePromise) as
-            | import("@stripe/stripe-js").Stripe
-            | null;
-
+          const stripe = await stripePromise;
           if (!stripe) {
             setLoading(null);
-            setError("Stripe failed to initialize.");
+            setError(
+              "Stripe failed to initialize. Check NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.",
+            );
             return;
           }
 
-          const stripeFixed = stripe as unknown as {
-            redirectToCheckout: (opts: {
-              sessionId: string;
-            }) => Promise<{ error?: { message?: string } }>;
-          };
-
-          const result = await stripeFixed.redirectToCheckout({
+          // TS-safe call (avoids the 'redirectToCheckout does not exist' type issue)
+          const result = await (stripe as any).redirectToCheckout({
             sessionId: data.sessionId,
           });
 
@@ -117,47 +107,39 @@ export default function ChoosePlanPage() {
   }
 
   return (
-    <div className={ui.page}>
-      <aside className={ui.sidebarWrap}>
-        <Sidebar />
-      </aside>
-
-      <main className={ui.main}>
-        <div className={ui.cardWrap}>
-          <div className={homeStyles.mainCard}>
-            <div className={homeStyles.hero}>
-              <div className={homeStyles.heroBadge}>Subscription</div>
-              <h1 className={homeStyles.heroTitle}>Choose Plan</h1>
-              <p className={homeStyles.heroSubtitle}>
-                Select monthly or yearly, then you’ll be redirected to Stripe
-                Checkout.
-              </p>
-            </div>
-
-            <div className={homeStyles.content}>
-              <div className={ui.buttonRow}>
-                <button
-                  className={ui.button}
-                  onClick={() => startCheckout(monthlyPriceId, "monthly")}
-                  disabled={loading !== null}
-                >
-                  {loading === "monthly" ? "Redirecting..." : "Choose Monthly"}
-                </button>
-
-                <button
-                  className={ui.button}
-                  onClick={() => startCheckout(yearlyPriceId, "yearly")}
-                  disabled={loading !== null}
-                >
-                  {loading === "yearly" ? "Redirecting..." : "Choose Yearly"}
-                </button>
-              </div>
-
-              {error && <div className={ui.errorBox}>{error}</div>}
-            </div>
-          </div>
+    <div className={homeStyles.container}>
+      <div className={homeStyles.mainCard}>
+        <div className={homeStyles.hero}>
+          <div className={homeStyles.heroBadge}>Subscription</div>
+          <h1 className={homeStyles.heroTitle}>Choose Plan</h1>
+          <p className={homeStyles.heroSubtitle}>
+            Select monthly or yearly, then you’ll be redirected to Stripe
+            Checkout.
+          </p>
         </div>
-      </main>
+
+        <div className={homeStyles.content}>
+          <div className={homeStyles.buttonRow}>
+            <button
+              className={homeStyles.button}
+              onClick={() => startCheckout(monthlyPriceId, "monthly")}
+              disabled={loading !== null}
+            >
+              {loading === "monthly" ? "Redirecting..." : "Choose Monthly"}
+            </button>
+
+            <button
+              className={homeStyles.button}
+              onClick={() => startCheckout(yearlyPriceId, "yearly")}
+              disabled={loading !== null}
+            >
+              {loading === "yearly" ? "Redirecting..." : "Choose Yearly"}
+            </button>
+          </div>
+
+          {error && <div className={homeStyles.errorBox}>{error}</div>}
+        </div>
+      </div>
     </div>
   );
 }
