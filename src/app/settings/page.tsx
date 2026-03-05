@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import ui from "../../styles/ui.module.css";
 import styles from "./SettingsPage.module.css";
+import { useRouter } from "next/navigation";
 
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
@@ -44,6 +45,7 @@ function clearListeningProgress() {
 
 export default function SettingsPage() {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const user = useSelector((state: RootState) => state.auth.user);
   const isPremium = useSelector((state: RootState) => state.auth.isPremium);
@@ -64,6 +66,7 @@ export default function SettingsPage() {
     await signOut(auth);
     dispatch(setUser(null));
     dispatch(setPremium(false));
+    router.replace("/login");
   }
 
   function handleClear() {
