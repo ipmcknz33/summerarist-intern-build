@@ -13,7 +13,7 @@ export default function LibraryPersist() {
 
   const [hydrated, setHydrated] = useState(false);
 
-  // 1) Hydrate once
+  
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -22,20 +22,20 @@ export default function LibraryPersist() {
         if (Array.isArray(parsed)) dispatch(hydrateLibrary(parsed));
       }
     } catch {
-      // ignore bad storage
+      
     } finally {
       setHydrated(true);
     }
   }, [dispatch]);
 
-  // 2) Persist only AFTER hydration is done
+ 
   useEffect(() => {
     if (!hydrated) return;
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     } catch {
-      // ignore storage write errors
+      
     }
   }, [items, hydrated]);
 

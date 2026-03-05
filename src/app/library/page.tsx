@@ -58,7 +58,7 @@ export default function LibraryPage() {
       const dur = getSavedDurationSeconds(b.id);
       const prog = getSavedProgressSeconds(b.id);
 
-      // "Finished" = listened to ~98% (gives a tiny buffer for rounding)
+      
       const isFinished = dur > 0 && prog / dur >= 0.98;
 
       if (isFinished) finished.push(b);

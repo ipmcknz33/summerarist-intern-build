@@ -115,7 +115,7 @@ export default function ForYouPage() {
         </div>
 
         <div className={ui.section}>
-          {/* Continue Listening */}
+          
           {continueListening.length > 0 && (
             <section className={pageStyles.section}>
               <h2 className={ui.h2}>Continue Listening</h2>
@@ -171,7 +171,7 @@ export default function ForYouPage() {
             </section>
           )}
 
-          {/* Selected Book */}
+          
           {selected && (
             <section className={pageStyles.section}>
               <h2 className={ui.h2}>Selected Book</h2>
@@ -200,7 +200,7 @@ export default function ForYouPage() {
             </section>
           )}
 
-          {/* Recommended */}
+          
           <section className={pageStyles.section}>
             <h2 className={ui.h2}>Recommended</h2>
 

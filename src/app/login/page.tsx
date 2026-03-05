@@ -111,7 +111,7 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {/* ✅ Guest login as its own row so it’s always visible */}
+          
             <div className={styles.guestRow}>
               <button
                 type="button"

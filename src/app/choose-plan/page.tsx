@@ -1,4 +1,3 @@
-// src/app/choose-plan/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,7 +5,7 @@ import homeStyles from "../HomePage.module.css";
 import ui from "@/styles/ui.module.css";
 
 const MONTHLY_LINK = "https://buy.stripe.com/test_dRm8wR3T59r1ePRb1nfEk00";
-const YEARLY_LINK = "https://buy.stripe.com/test_dRm8wR3T59r1ePRb1nfEk00"; // swap when you have yearly link
+const YEARLY_LINK = "https://buy.stripe.com/test_dRm8wR3T59r1ePRb1nfEk00"; 
 
 export default function ChoosePlanPage() {
   const [loading, setLoading] = useState<"monthly" | "yearly" | null>(null);
@@ -16,8 +15,7 @@ export default function ChoosePlanPage() {
     window.location.assign(plan === "monthly" ? MONTHLY_LINK : YEARLY_LINK);
   };
 
-  // IMPORTANT: single top-level <div> so it becomes:
-  // body > div.AppFrame... > main > div  (your card wrapper)
+
   return (
     <div className={homeStyles.container}>
       <div className={`${homeStyles.card} ${ui.card}`}>

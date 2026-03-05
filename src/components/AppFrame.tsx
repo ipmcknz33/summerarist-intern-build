@@ -7,6 +7,7 @@ import type { RootState } from "../store/store";
 
 import Sidebar from "./Sidebar";
 import styles from "./AppFrame.module.css";
+import SearchBar from "@/components/SearchBar";
 
 const PUBLIC_ROUTES = new Set(["/login", "/signup"]);
 
@@ -19,11 +20,10 @@ export default function AppFrame({ children }: { children: ReactNode }) {
   const isPublic = PUBLIC_ROUTES.has(pathname);
   const showSidebar = !!user && !isPublic && pathname !== "/choose-plan";
 
-  // Auth gate
   useEffect(() => {
     if (status !== "ready") return;
 
-    // If logged out: force landing to /login and block everything else
+    
     if (!user) {
       if (pathname !== "/login" && pathname !== "/signup") {
         router.replace("/login");
@@ -31,19 +31,19 @@ export default function AppFrame({ children }: { children: ReactNode }) {
       return;
     }
 
-    // If logged in, keep them out of login/signup pages
+    
     if (user && isPublic) {
       router.replace("/for-you");
     }
   }, [status, user, pathname, router, isPublic]);
 
-  // While checking auth, render nothing (prevents flash of protected pages)
+  
   if (status !== "ready") return null;
 
-  // If logged out, only allow login/signup pages
+ 
   if (!user && !isPublic) return null;
 
-  // Layout: sidebar only when logged in (and not on /choose-plan)
+
   return (
     <div className={styles.root}>
       {showSidebar && (
@@ -52,8 +52,9 @@ export default function AppFrame({ children }: { children: ReactNode }) {
         </aside>
       )}
 
-      <main className={showSidebar ? styles.main : styles.mainFull}>
-        {children}
+      <main className={styles.main}>
+        <SearchBar />
+        <div>{children}</div>
       </main>
     </div>
   );

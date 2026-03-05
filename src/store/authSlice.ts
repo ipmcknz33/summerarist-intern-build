@@ -22,7 +22,7 @@ setUser(state, action: PayloadAction<AuthUser>) {
   state.user = action.payload;
   state.status = "ready";
 
-  // TEMP: if user logs out, reset premium
+ 
   if (!action.payload) state.isPremium = false;
 },
     setPremium(state, action: PayloadAction<boolean>) {
