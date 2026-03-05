@@ -18,7 +18,6 @@ export default function AppFrame({ children }: { children: ReactNode }) {
   const { user, status } = useSelector((state: RootState) => state.auth);
 
   const isPublic = PUBLIC_ROUTES.has(pathname);
-
   const showSidebar = !!user && !isPublic && pathname !== "/choose-plan";
   const showSearch = !!user && !isPublic && pathname !== "/choose-plan";
 

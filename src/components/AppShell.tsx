@@ -8,7 +8,6 @@ import styles from "../app/layout.module.css";
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
- 
   const hideShell = pathname === "/" || pathname?.startsWith("/choose-plan");
 
   if (hideShell) {

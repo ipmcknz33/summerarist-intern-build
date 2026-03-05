@@ -5,7 +5,7 @@ import homeStyles from "../HomePage.module.css";
 import ui from "@/styles/ui.module.css";
 
 const MONTHLY_LINK = "https://buy.stripe.com/test_dRm8wR3T59r1ePRb1nfEk00";
-const YEARLY_LINK = "https://buy.stripe.com/test_dRm8wR3T59r1ePRb1nfEk00"; 
+const YEARLY_LINK = "https://buy.stripe.com/test_dRm8wR3T59r1ePRb1nfEk00"; // replace when you create yearly link
 
 export default function ChoosePlanPage() {
   const [loading, setLoading] = useState<"monthly" | "yearly" | null>(null);
@@ -15,7 +15,6 @@ export default function ChoosePlanPage() {
     window.location.assign(plan === "monthly" ? MONTHLY_LINK : YEARLY_LINK);
   };
 
-
   return (
     <div className={homeStyles.container}>
       <div className={`${homeStyles.card} ${ui.card}`}>
@@ -23,8 +22,7 @@ export default function ChoosePlanPage() {
           <div className={homeStyles.badge}>Subscription</div>
           <h1 className={homeStyles.title}>Choose Plan</h1>
           <p className={homeStyles.subtitle}>
-            Select monthly or yearly, then you’ll be redirected to Stripe
-            Checkout.
+            Select monthly or yearly, then you’ll be redirected to Stripe Checkout.
           </p>
         </div>
 
