@@ -1,0 +1,40 @@
+.wrap {
+    padding: 18px;
+}
+
+.logo {
+    margin: 0 0 14px;
+    font-size: 22px;
+}
+
+.session {
+    margin-bottom: 18px;
+}
+
+.muted {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.small {
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.email {
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.smallBtn {
+    margin-top: 10px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

@@ -1,0 +1,21 @@
+.root {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  border-right: 1px solid #e5e7eb;
+  padding: 16px;
+  background: #fff;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+.mainFull {
+  width: 100%;
+  padding: 20px;
+}

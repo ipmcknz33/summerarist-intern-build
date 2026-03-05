@@ -1,0 +1,31 @@
+.card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: white;
+}
+
+.cover {
+  width: 70px;
+  height: 96px;
+  border-radius: 10px;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.title {
+  height: 14px;
+  width: 80%;
+}
+
+.author {
+  height: 12px;
+  width: 55%;
+}

@@ -1,0 +1,89 @@
+.page {
+  display: flex;
+  justify-content: center;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.cover {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+}
+
+.titleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.author {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+.playerCard {
+  width: 100%;
+}
+
+.audio {
+  width: 100%;
+}
+
+.controlsRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.smallBtn {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.smallBtn:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.sectionTitle {
+  margin: 18px 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.summaryText {
+  margin: 0;
+  line-height: 1.65;
+  opacity: 0.92;
+  white-space: pre-line;
+}

@@ -1,0 +1,61 @@
+/* App shell (matches Home layout: grey bg + sidebar + centered card) */
+.page {
+    min-height: 100vh;
+    background: #f3f4f6;
+    display: flex;
+}
+
+.sidebarWrap {
+    width: 260px;
+    background: #ffffff;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 28px;
+}
+
+.cardWrap {
+    width: min(980px, 100%);
+}
+
+/* Buttons (keep exactly how you like them) */
+.buttonRow {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    padding: 22px 20px;
+}
+
+.button {
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: #111827;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.errorBox {
+    margin: 0 20px 20px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.08);
+    color: #991b1b;
+    font-weight: 700;
+}
