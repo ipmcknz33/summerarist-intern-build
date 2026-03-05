@@ -8,6 +8,7 @@ import { openAuth } from "../store/uiSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/auth";
 import styles from "./Sidebar.module.css";
+import { setUser, setPremium } from "@/store/authSlice";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -17,7 +18,9 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push("/");
+    dispatch(setUser(null));
+    dispatch(setPremium(false));
+    window.location.assign("/login");
   };
 
   const handleLogin = () => {

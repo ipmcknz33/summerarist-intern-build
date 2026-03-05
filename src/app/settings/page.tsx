@@ -66,7 +66,8 @@ export default function SettingsPage() {
     await signOut(auth);
     dispatch(setUser(null));
     dispatch(setPremium(false));
-    router.replace("/login");
+
+    window.location.assign("/login");
   }
 
   function handleClear() {
