@@ -430,15 +430,19 @@ export default function PlayerPage() {
         onPause={() => setIsPlaying(false)}
         onEnded={() => {
           setIsPlaying(false);
-          setCurrentTime(0);
           setDragTime(null);
 
-          if (audioRef.current) {
-            audioRef.current.currentTime = 0;
-          }
+          const audio = audioRef.current;
+          const finalDuration =
+            audio && Number.isFinite(audio.duration)
+              ? audio.duration
+              : duration;
+
+          setCurrentTime(finalDuration);
 
           try {
-            localStorage.setItem(PROGRESS_KEY, "0");
+            localStorage.setItem(PROGRESS_KEY, String(finalDuration));
+            localStorage.setItem(DURATION_KEY, String(finalDuration));
           } catch {}
         }}
         preload="metadata"
