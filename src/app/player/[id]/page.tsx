@@ -30,28 +30,6 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className={styles.searchIcon} aria-hidden="true">
-      <circle
-        cx="11"
-        cy="11"
-        r="6.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <path
-        d="M16 16l4 4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function PlayIcon() {
   return (
     <svg viewBox="0 0 24 24" className={styles.controlIcon} aria-hidden="true">
@@ -120,7 +98,6 @@ export default function PlayerPage() {
   const [dragTime, setDragTime] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
 
   function readSavedProgress() {
     try {
@@ -312,27 +289,6 @@ export default function PlayerPage() {
   if (loading) {
     return (
       <div className={styles.page}>
-        <div className={styles.topBar}>
-          <div className={styles.searchShell}>
-            <input
-              className={styles.searchInput}
-              type="text"
-              value=""
-              readOnly
-              placeholder="Search for books"
-            />
-            <button
-              type="button"
-              className={styles.searchButton}
-              aria-label="Search"
-            >
-              <SearchIcon />
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.topDivider} />
-
         <div className={styles.contentWrap}>
           <div className={styles.titleSkeleton} />
           <div className={styles.authorSkeleton} />
@@ -346,30 +302,6 @@ export default function PlayerPage() {
   if (!book) {
     return (
       <div className={styles.page}>
-        <div className={styles.topBar}>
-          <form
-            className={styles.searchShell}
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <input
-              className={styles.searchInput}
-              type="text"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search for books"
-            />
-            <button
-              type="submit"
-              className={styles.searchButton}
-              aria-label="Search"
-            >
-              <SearchIcon />
-            </button>
-          </form>
-        </div>
-
-        <div className={styles.topDivider} />
-
         <div className={styles.contentWrap}>
           <h1 className={styles.emptyTitle}>
             We couldn&apos;t load this book.
@@ -382,30 +314,6 @@ export default function PlayerPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.topBar}>
-        <form
-          className={styles.searchShell}
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <input
-            className={styles.searchInput}
-            type="text"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search for books"
-          />
-          <button
-            type="submit"
-            className={styles.searchButton}
-            aria-label="Search"
-          >
-            <SearchIcon />
-          </button>
-        </form>
-      </div>
-
-      <div className={styles.topDivider} />
-
       <div className={styles.contentWrap}>
         <header className={styles.header}>
           <h1 className={styles.title}>{book.title}</h1>

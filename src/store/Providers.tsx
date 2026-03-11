@@ -5,6 +5,7 @@ import { store } from "./store";
 import AuthListener from "../components/AuthListener";
 import AuthModal from "../components/AuthModal";
 import LibraryPersist from "./LibraryPersist";
+import AuthGuard from "../components/AuthGuard";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <AuthListener />
       <AuthModal />
       <LibraryPersist />
-      {children}
+      <AuthGuard>{children}</AuthGuard>
     </Provider>
   );
 }

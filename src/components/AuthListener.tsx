@@ -6,10 +6,8 @@ import { useDispatch } from "react-redux";
 import { auth } from "../firebase/auth";
 import { setAuthReady, setPremium, setUser } from "../store/authSlice";
 
-
 export default function AuthListener() {
   const dispatch = useDispatch();
- 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (fbUser) => {

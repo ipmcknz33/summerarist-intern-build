@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 import SearchBar from "./SearchBar";
-import styles from "./AppShell.module.css";
+import styles from "./AppFrame.module.css";
 
 type Props = {
   children: ReactNode;
@@ -13,7 +13,8 @@ type Props = {
 export default function AppShell({ children }: Props) {
   const pathname = usePathname();
 
-  const hideShell = pathname === "/" || pathname === "/choose-plan";
+  const hideShell =
+    pathname === "/" || pathname === "/login" || pathname === "/choose-plan";
 
   if (hideShell) {
     return <>{children}</>;
