@@ -1,49 +1,463 @@
-.container {
+.page {
+    min-height: 100vh;
+    background: #ffffff;
+    color: #032b41;
+}
+
+.navbar {
+    padding-top: 14px;
+}
+
+.navInner {
+    width: min(1100px, calc(100% - 82px));
+    margin: 0 auto;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.card {
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brandMarkWrap {
+    position: relative;
+    width: 31px;
+    height: 31px;
+    flex-shrink: 0;
+}
+
+.brandMarkMain {
+    position: absolute;
+    inset: 0;
+    background: #032b41;
+    border-radius: 3px;
+    transform: rotate(-26deg);
+}
+
+.brandMarkLabel {
+    position: absolute;
+    left: 4px;
+    bottom: 3px;
+    background: #ffffff;
+    color: #032b41;
+    font-size: 4px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 3px;
+    border-radius: 1px;
+    transform: rotate(-26deg);
+    letter-spacing: 0.04em;
+}
+
+.brandText {
+    color: #032b41;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.navLink,
+.navLinkButton {
+    border: none;
+    background: transparent;
+    padding: 0;
+    color: #032b41;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.main {
+    width: min(1100px, calc(100% - 82px));
+    margin: 0 auto;
+    padding-top: 56px;
+}
+
+.heroSection {
+    display: grid;
+    grid-template-columns: 392px 1fr;
+    align-items: start;
+}
+
+.heroCopy {
+    padding-top: 16px;
+}
+
+.heroTitle {
+    margin: 0;
+    max-width: 350px;
+    color: #032b41;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.03em;
+}
+
+.heroText {
+    margin: 20px 0 0;
+    max-width: 292px;
+    color: #5d6c75;
+    font-size: 14px;
+    line-height: 1.72;
+}
+
+.loginButton {
+    margin-top: 18px;
+    width: 239px;
+    height: 32px;
+    border: none;
+    border-radius: 2px;
+    background: #2bd97c;
+    color: #032b41;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.heroArt {
+    position: relative;
     width: 100%;
-    max-width: 720px;
-    overflow: hidden;
+    height: 286px;
 }
 
-.hero {
-    background: linear-gradient(135deg,
-            rgba(99, 102, 241, 0.18),
-            rgba(14, 165, 233, 0.14));
-    padding: 40px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+.heroDots {
+    position: absolute;
+    top: 36px;
+    left: 178px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.badge {
-    display: inline-block;
+.heroDots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #4b4b63;
+}
+
+.heroCode {
+    position: absolute;
+    top: 34px;
+    left: 212px;
+    color: #7d7d91;
     font-size: 12px;
     font-weight: 600;
-    padding: 6px 10px;
+}
+
+.heroMiniLine {
+    position: absolute;
+    top: 40px;
+    left: 257px;
+    width: 37px;
+    height: 3px;
     border-radius: 999px;
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    margin-bottom: 12px;
+    background: #5b5b74;
 }
 
-.title {
-    font-size: 52px;
-    font-weight: 800;
-    margin: 0 0 12px;
+.heroMiniSquares {
+    position: absolute;
+    top: 34px;
+    left: 336px;
+    display: flex;
+    gap: 5px;
 }
 
-.subtitle {
-    font-size: 18px;
-    color: rgba(0, 0, 0, 0.65);
-    max-width: 520px;
+.heroMiniSquares span {
+    width: 7px;
+    height: 7px;
+    background: #4b4b63;
+    border-radius: 1px;
 }
 
-.actions {
+.illustrationCard {
+    position: absolute;
+    top: 58px;
+    left: 184px;
+    width: 176px;
+    height: 142px;
+    border: 4px solid #dcdcdc;
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+.illustrationLineGreen {
+    position: absolute;
+    top: 24px;
+    left: 47px;
+    width: 63px;
+    height: 4px;
+    border-radius: 999px;
+    background: #2bd97c;
+}
+
+.illustrationLine {
+    position: absolute;
+    left: 47px;
+    width: 84px;
+    height: 3px;
+    border-radius: 999px;
+    background: #dddddd;
+}
+
+.illustrationLine:nth-of-type(2) {
+    top: 43px;
+}
+
+.illustrationLine:nth-of-type(3) {
+    top: 59px;
+}
+
+.illustrationLine:nth-of-type(4) {
+    top: 75px;
+}
+
+.illustrationLineShort {
+    position: absolute;
+    top: 91px;
+    left: 47px;
+    width: 56px;
+    height: 3px;
+    border-radius: 999px;
+    background: #dddddd;
+}
+
+.illustrationPerson {
+    position: absolute;
+    left: 15px;
+    top: 39px;
+    width: 58px;
+    height: 176px;
+}
+
+.personHead {
+    position: absolute;
+    top: 2px;
+    left: 15px;
+    width: 17px;
+    height: 17px;
+    border-radius: 999px;
+    background: #23283e;
+    z-index: 2;
+}
+
+.personHair {
+    position: absolute;
+    top: 5px;
+    left: 7px;
+    width: 30px;
+    height: 31px;
+    border-radius: 18px 18px 16px 16px;
+    background: #2e3048;
+    z-index: 3;
+}
+
+.personBody {
+    position: absolute;
+    top: 28px;
+    left: 10px;
+    width: 25px;
+    height: 52px;
+    background: #2bd97c;
+    border-radius: 12px 12px 8px 8px;
+    z-index: 2;
+}
+
+.personArmLeft,
+.personArmRight {
+    position: absolute;
+    top: 39px;
+    width: 6px;
+    height: 31px;
+    background: #f0a68a;
+    border-radius: 999px;
+    z-index: 1;
+}
+
+.personArmLeft {
+    left: 5px;
+    transform: rotate(18deg);
+}
+
+.personArmRight {
+    left: 34px;
+    transform: rotate(-18deg);
+}
+
+.personLegLeft,
+.personLegRight {
+    position: absolute;
+    top: 76px;
+    width: 7px;
+    height: 69px;
+    background: #2e3048;
+    border-radius: 999px;
+}
+
+.personLegLeft {
+    left: 14px;
+    transform: rotate(4deg);
+}
+
+.personLegRight {
+    left: 26px;
+    transform: rotate(-3deg);
+}
+
+.personFootLeft,
+.personFootRight {
+    position: absolute;
+    top: 141px;
+    width: 14px;
+    height: 5px;
+    background: #2e3048;
+    border-radius: 999px;
+}
+
+.personFootLeft {
+    left: 10px;
+}
+
+.personFootRight {
+    left: 23px;
+}
+
+.illustrationCheck {
+    position: absolute;
+    right: 18px;
+    bottom: 27px;
+    width: 15px;
+    height: 15px;
+    border-radius: 999px;
+    background: #2bd97c;
+}
+
+.checkArrow {
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    width: 7px;
+    height: 3px;
+    border-top: 2px solid #ffffff;
+    border-right: 2px solid #ffffff;
+    transform: rotate(45deg);
+}
+
+.floorLine {
+    position: absolute;
+    top: 254px;
+    left: 146px;
+    width: 132px;
+    height: 2px;
+    background: #d6d6d6;
+}
+
+.featuresSection {
+    padding-top: 112px;
+}
+
+.featuresTitle {
+    margin: 0;
+    text-align: center;
+    color: #032b41;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.featuresGrid {
+    width: min(930px, 100%);
+    margin: 42px auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.featureCard {
+    text-align: center;
+}
+
+.featureIcon {
     display: flex;
     justify-content: center;
-    gap: 14px;
-    padding: 30px 40px 40px;
-    flex-wrap: wrap;
+    color: #032b41;
+}
+
+.featureIconSvg {
+    width: 42px;
+    height: 42px;
+    display: block;
+}
+
+.featureHeading {
+    margin: 10px 0 0;
+    color: #032b41;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.featureText {
+    margin: 14px auto 0;
+    max-width: 252px;
+    color: #6a7880;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+
+    .navInner,
+    .main {
+        width: calc(100% - 40px);
+    }
+
+    .heroSection {
+        grid-template-columns: 1fr;
+        row-gap: 40px;
+    }
+
+    .heroArt {
+        position: relative;
+        pointer-events: none;
+    }
+
+    .heroDots {
+        left: 30px;
+    }
+
+    .heroCode {
+        left: 66px;
+    }
+
+    .heroMiniLine {
+        left: 112px;
+    }
+
+    .heroMiniSquares {
+        left: 190px;
+    }
+
+    .illustrationCard {
+        left: 36px;
+    }
+
+    .floorLine {
+        left: 0;
+    }
+
+    .featuresGrid {
+        grid-template-columns: 1fr;
+        gap: 38px;
+    }
 }

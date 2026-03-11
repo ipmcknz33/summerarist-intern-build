@@ -1,17 +1,62 @@
+.page {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
 .section {
-    margin-top: 24px;
+    margin-bottom: 56px;
+}
+
+.sectionHeader {
+    margin-bottom: 20px;
 }
 
 .sectionTitle {
-    font-size: 18px;
-    font-weight: 800;
-    margin: 0 0 12px;
+    margin: 0;
+    color: #032b41;
+    font-size: 22px;
+    font-weight: 700;
 }
 
-.title {
-    font-weight: 800;
-    margin-top: 10px;
-    line-height: 1.2;
+.sectionSubtitle {
+    margin-top: 6px;
+    color: #5b6b73;
+    font-size: 14px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 150px);
+    gap: 28px;
+}
+
+.card {
+    width: 150px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.coverWrap {
+    width: 150px;
+    margin-bottom: 10px;
+}
+
+.cover {
+    width: 150px;
+    height: 210px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #e7edf2;
+}
+
+.cardTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #032b41;
+    margin: 0;
+    line-height: 1.35;
 
     display: -webkit-box;
     line-clamp: 2;
@@ -19,39 +64,56 @@
     overflow: hidden;
 }
 
-.meta {
-    opacity: 0.75;
-    font-size: 14px;
+.cardAuthor {
+    font-size: 13px;
+    color: #6b757b;
     margin-top: 4px;
 }
 
-.smallMeta {
-    opacity: 0.7;
-    font-size: 12px;
-    margin-top: 6px;
-}
-
 .progressWrap {
-    height: 8px;
-    background: #eef2ff;
+    width: 150px;
+    height: 6px;
+    background: #e7edf2;
     border-radius: 999px;
     margin-top: 10px;
-    overflow: hidden;
 }
 
 .progressBar {
     height: 100%;
-    background: #3b82f6;
+    background: #116be9;
     border-radius: 999px;
 }
 
+.cardMeta {
+    font-size: 12px;
+    color: #6b757b;
+    margin-top: 6px;
+}
+
 .finishedPill {
-    display: inline-block;
     margin-top: 10px;
-    padding: 6px 10px;
-    border-radius: 999px;
+    display: inline-block;
     font-size: 12px;
     font-weight: 700;
-    background: #111827;
-    color: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #edf4fb;
+    color: #032b41;
+}
+
+.cardActions {
+    margin-top: 10px;
+}
+
+.secondaryButton {
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #d7dde3;
+    background: white;
+    cursor: pointer;
+}
+
+.secondaryButton:hover {
+    background: #f6f8fa;
 }

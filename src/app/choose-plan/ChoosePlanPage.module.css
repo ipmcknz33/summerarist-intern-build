@@ -1,61 +1,245 @@
-/* App shell (matches Home layout: grey bg + sidebar + centered card) */
 .page {
-    min-height: 100vh;
-    background: #f3f4f6;
-    display: flex;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 0 40px;
 }
 
-.sidebarWrap {
-    width: 260px;
-    background: #ffffff;
-    border-right: 1px solid rgba(0, 0, 0, 0.08);
+.topRow {
+  margin-bottom: 24px;
 }
 
-.main {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    padding: 28px;
+.backButton {
+  min-width: 72px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #d7dde3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #032b41;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.cardWrap {
-    width: min(980px, 100%);
+.backButton:hover {
+  background: #f7fafc;
 }
 
-/* Buttons (keep exactly how you like them) */
-.buttonRow {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    padding: 22px 20px;
+.hero {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.button {
-    padding: 10px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    background: #111827;
-    color: #ffffff;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 120ms ease, opacity 120ms ease;
+.eyebrow {
+  margin: 0 0 10px;
+  color: #116be9;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-.button:hover {
-    transform: translateY(-1px);
+.title {
+  margin: 0;
+  color: #032b41;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
-.button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+.subtitle {
+  margin: 14px auto 0;
+  max-width: 620px;
+  color: #5b6b73;
+  font-size: 16px;
+  line-height: 1.65;
 }
 
-.errorBox {
-    margin: 0 20px 20px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    background: rgba(239, 68, 68, 0.08);
-    color: #991b1b;
-    font-weight: 700;
+.planGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 36px;
+}
+
+.planCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 28px;
+  border: 1px solid #e7edf2;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(3, 43, 65, 0.06);
+}
+
+.planCardFeatured {
+  border-color: #116be9;
+  box-shadow: 0 12px 30px rgba(17, 107, 233, 0.12);
+}
+
+.planBadge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #116be9;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.planHeader {
+  padding-right: 92px;
+}
+
+.planName {
+  margin: 0;
+  color: #032b41;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.price {
+  margin: 14px 0 0;
+  color: #032b41;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.price span {
+  margin-left: 6px;
+  color: #5b6b73;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.planDescription {
+  margin: 14px 0 0;
+  color: #5b6b73;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.featureList {
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.featureList li {
+  position: relative;
+  padding-left: 24px;
+  color: #394547;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.featureList li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #116be9;
+}
+
+.primaryButton {
+  margin-top: 28px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  background: #032b41;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  opacity: 0.94;
+}
+
+.primaryButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.bottomNote {
+  margin-top: 36px;
+  padding: 24px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(3, 43, 65, 0.06);
+}
+
+.noteTitle {
+  margin: 0;
+  color: #032b41;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.noteText {
+  margin: 12px 0 0;
+  max-width: 760px;
+  color: #5b6b73;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+@media (max-width: 1024px) {
+  .title {
+    font-size: 34px;
+  }
+
+  .price {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 18px 0 32px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .planGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .planCard {
+    padding: 22px;
+    border-radius: 20px;
+  }
+
+  .planHeader {
+    padding-right: 0;
+  }
+
+  .planBadge {
+    position: static;
+    margin-bottom: 14px;
+    width: fit-content;
+  }
 }

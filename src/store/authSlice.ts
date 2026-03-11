@@ -1,10 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type AuthUser = { uid: string; email: string | null } | null;
+export type AuthUser = {
+  uid: string;
+  email: string | null;
+} | null;
+
+export type AuthStatus = "loading" | "ready";
 
 type AuthState = {
   user: AuthUser;
-  status: "loading" | "ready";
+  status: AuthStatus;
   isPremium: boolean;
 };
 
@@ -18,18 +23,25 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-setUser(state, action: PayloadAction<AuthUser>) {
-  state.user = action.payload;
-  state.status = "ready";
+    setUser(state, action: PayloadAction<AuthUser>) {
+      state.user = action.payload;
+    },
 
- 
-  if (!action.payload) state.isPremium = false;
-},
+    setAuthReady(state) {
+      state.status = "ready";
+    },
+
     setPremium(state, action: PayloadAction<boolean>) {
       state.isPremium = action.payload;
+    },
+
+    resetAuth(state) {
+      state.user = null;
+      state.status = "ready";
+      state.isPremium = false;
     },
   },
 });
 
-export const { setUser, setPremium } = authSlice.actions;
+export const { setUser, setAuthReady, setPremium, resetAuth } = authSlice.actions;
 export default authSlice.reducer;

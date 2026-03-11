@@ -11,6 +11,7 @@ import type { RootState } from "../../store/store";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/auth";
 import { setUser, setPremium } from "../../store/authSlice";
+import { openAuth } from "../../store/uiSlice";
 
 const PLAYBACK_RATE_KEY = "summarist_playbackRate";
 
@@ -66,14 +67,77 @@ export default function SettingsPage() {
     await signOut(auth);
     dispatch(setUser(null));
     dispatch(setPremium(false));
-
-    window.location.assign("/login");
+    router.push("/");
   }
 
   function handleClear() {
     clearListeningProgress();
     setCleared(true);
     window.setTimeout(() => setCleared(false), 2500);
+  }
+
+  function handleLogin() {
+    dispatch(openAuth());
+  }
+
+  function handleUpgrade() {
+    router.push("/choose-plan");
+  }
+
+  if (!user) {
+    return (
+      <div className={ui.page}>
+        <div className={`${ui.card} ${ui.pageCard}`}>
+          <div className={ui.hero}>
+            <div className={styles.topRow}>
+              <h1 className={ui.h1}>Settings</h1>
+              <span className={`${styles.planPill} ${styles.free}`}>Basic</span>
+            </div>
+
+            <p className={ui.muted}>
+              Log in to view your account and subscription settings.
+            </p>
+          </div>
+
+          <div className={ui.section}>
+            <div
+              className={styles.block}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: "16px",
+              }}
+            >
+              <div
+                style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: "50%",
+                  background: "#f1f6f4",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 28,
+                }}
+              >
+                ⚙️
+              </div>
+
+              <h3 className={styles.blockTitle}>You&apos;re not logged in</h3>
+
+              <p className={styles.hint}>
+                Sign in to manage your email, playback preferences, and subscription.
+              </p>
+
+              <button className={ui.button} onClick={handleLogin}>
+                Log In
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -88,7 +152,7 @@ export default function SettingsPage() {
                 isPremium ? styles.premium : styles.free
               }`}
             >
-              {isPremium ? "Premium" : "Free"}
+              {isPremium ? "Premium" : "Basic"}
             </span>
           </div>
 
@@ -102,8 +166,34 @@ export default function SettingsPage() {
             <h3 className={styles.blockTitle}>Account</h3>
             <div className={styles.kv}>
               <span className={styles.k}>Email</span>
-              <span className={styles.v}>{user?.email ?? "Unknown"}</span>
+              <span className={styles.v}>{user.email ?? "Unknown"}</span>
             </div>
+          </div>
+
+          <div className={styles.block}>
+            <h3 className={styles.blockTitle}>Subscription</h3>
+            <div className={styles.kv}>
+              <span className={styles.k}>Plan</span>
+              <span className={styles.v}>{isPremium ? "Premium" : "Basic"}</span>
+            </div>
+
+            {!isPremium ? (
+              <>
+                <p className={styles.hint}>
+                  You&apos;re currently on the Basic plan. Upgrade to unlock premium books.
+                </p>
+
+                <div className={styles.actionRow}>
+                  <button className={ui.button} onClick={handleUpgrade}>
+                    Upgrade
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p className={styles.hint}>
+                Your premium access is active.
+              </p>
+            )}
           </div>
 
           <div className={styles.block}>

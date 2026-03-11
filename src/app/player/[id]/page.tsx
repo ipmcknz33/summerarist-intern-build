@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import ui from "../../../styles/ui.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../store/store";
+import { openAuth } from "../../../store/uiSlice";
 import styles from "./PlayerPage.module.css";
 
 type Book = {
@@ -11,126 +13,331 @@ type Book = {
   author: string;
   summary?: string;
   bookDescription?: string;
+  authorDescription?: string;
   audioLink?: string;
   imageLink?: string;
+  subscriptionRequired?: boolean;
 };
 
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${String(s).padStart(2, "0")}`;
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className={styles.searchIcon} aria-hidden="true">
+      <circle
+        cx="11"
+        cy="11"
+        r="6.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M16 16l4 4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className={styles.controlIcon} aria-hidden="true">
+      <path d="M8 5.5v13l10-6.5-10-6.5Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className={styles.controlIcon} aria-hidden="true">
+      <path d="M7 5h3v14H7V5Zm7 0h3v14h-3V5Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function BackTenIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className={styles.controlIcon} aria-hidden="true">
+      <path
+        d="M12.8 6.3a6.6 6.6 0 1 1-5.66 10.02.75.75 0 0 1 1.29-.76A5.1 5.1 0 1 0 12.8 7.8h-.56l1.16 1.16a.75.75 0 1 1-1.06 1.06L9.9 7.58l2.44-2.44a.75.75 0 0 1 1.06 1.06L12.24 6.3h.56Z"
+        fill="currentColor"
+      />
+      <text x="12" y="16.15" textAnchor="middle" className={styles.skipText}>
+        10
+      </text>
+    </svg>
+  );
+}
+
+function ForwardTenIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className={styles.controlIcon} aria-hidden="true">
+      <path
+        d="M11.2 6.3a6.6 6.6 0 1 0 5.66 10.02.75.75 0 1 0-1.29-.76A5.1 5.1 0 1 1 11.2 7.8h.56l-1.16 1.16a.75.75 0 0 0 1.06 1.06l2.44-2.44-2.44-2.44a.75.75 0 0 0-1.06 1.06l1.16 1.1h-.56Z"
+        fill="currentColor"
+      />
+      <text x="12" y="16.15" textAnchor="middle" className={styles.skipText}>
+        10
+      </text>
+    </svg>
+  );
 }
 
 export default function PlayerPage() {
   const params = useParams<{ id: string }>();
-  const id = params.id;
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isPremium = useSelector((state: RootState) => state.auth.isPremium);
+
+  const id = params.id;
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const PROGRESS_KEY = `summarist_progress_${id}`;
   const DURATION_KEY = `summarist_duration_${id}`;
-
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const PLAYBACK_RATE_KEY = "summarist_playbackRate";
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [duration, setDuration] = useState(0);
-  const [current, setCurrent] = useState(0);
-  const [rate, setRate] = useState<number>(1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [dragTime, setDragTime] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
-  const PLAYBACK_RATE_KEY = "summarist_playbackRate";
+  function readSavedProgress() {
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      const parsed = raw ? Number(raw) : 0;
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+    } catch {
+      return 0;
+    }
+  }
 
-  function readPlaybackRate(): number {
+  function readSavedDuration() {
+    try {
+      const raw = localStorage.getItem(DURATION_KEY);
+      const parsed = raw ? Number(raw) : 0;
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  function readPlaybackRate() {
     try {
       const raw = localStorage.getItem(PLAYBACK_RATE_KEY);
-      const n = raw ? Number(raw) : 1;
-      return Number.isFinite(n) && n > 0 ? n : 1;
+      const parsed = raw ? Number(raw) : 1;
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
     } catch {
       return 1;
     }
   }
 
-  function writePlaybackRate(rate: number) {
-    try {
-      localStorage.setItem(PLAYBACK_RATE_KEY, String(rate));
-    } catch {}
-  }
-
   useEffect(() => {
-    async function load() {
+    let alive = true;
+
+    async function loadBook() {
       try {
-        const res = await fetch(
+        const response = await fetch(
           `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${encodeURIComponent(
             id,
           )}`,
         );
-        const data = await res.json();
+
+        if (!response.ok) {
+          throw new Error(`Failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!alive) return;
+
+        if (!user) {
+          dispatch(openAuth());
+          router.replace(`/book/${id}`);
+          return;
+        }
+
+        const isLockedPremiumBook = data?.subscriptionRequired === true;
+
+        if (isLockedPremiumBook && !isPremium) {
+          router.replace("/choose-plan");
+          return;
+        }
 
         setBook({
           id: data?.id ?? id,
           title: data?.title ?? "Untitled",
           author: data?.author ?? "",
-          summary: data?.summary,
-          bookDescription: data?.bookDescription,
-          audioLink: data?.audioLink,
-          imageLink: data?.imageLink,
+          summary: data?.summary ?? "",
+          bookDescription: data?.bookDescription ?? "",
+          authorDescription: data?.authorDescription ?? "",
+          audioLink: data?.audioLink ?? "",
+          imageLink: data?.imageLink ?? "",
+          subscriptionRequired: isLockedPremiumBook,
         });
 
-        const saved = Number(localStorage.getItem(PROGRESS_KEY) || 0);
-        if (Number.isFinite(saved) && saved > 0) setCurrent(saved);
+        const savedProgress = readSavedProgress();
+        const savedDuration = readSavedDuration();
 
-        const savedDur = Number(localStorage.getItem(DURATION_KEY) || 0);
-        if (Number.isFinite(savedDur) && savedDur > 0) setDuration(savedDur);
-      } catch (e) {
-        console.error("Failed to load book", e);
+        if (savedProgress > 0) {
+          setCurrentTime(savedProgress);
+        }
+
+        if (savedDuration > 0) {
+          setDuration(savedDuration);
+        }
+      } catch {
+        if (alive) {
+          setBook(null);
+        }
       } finally {
-        setLoading(false);
+        if (alive) {
+          setLoading(false);
+        }
       }
     }
 
-    load();
-  }, [id]);
+    loadBook();
 
-  useEffect(() => {
-    const r = readPlaybackRate();
-    setRate(r);
+    return () => {
+      alive = false;
+    };
+  }, [dispatch, id, isPremium, router, user]);
 
-    if (audioRef.current) {
-      audioRef.current.playbackRate = r;
-    }
-  }, []);
   useEffect(() => {
     try {
-      localStorage.setItem(PROGRESS_KEY, String(current));
+      localStorage.setItem(PROGRESS_KEY, String(currentTime));
     } catch {}
-  }, [current]);
+  }, [PROGRESS_KEY, currentTime]);
 
-  const remaining = useMemo(() => {
-    if (!duration) return 0;
-    return Math.max(0, duration - current);
-  }, [duration, current]);
+  const displayedTime = dragTime ?? currentTime;
 
-  function seekBy(delta: number) {
-    const a = audioRef.current;
-    if (!a) return;
-    a.currentTime = Math.max(
-      0,
-      Math.min(a.duration || 0, a.currentTime + delta),
-    );
+  const progressPercent = useMemo(() => {
+    if (!duration || duration <= 0) return 0;
+    return (displayedTime / duration) * 100;
+  }, [displayedTime, duration]);
+
+  function commitSeek(nextTime: number) {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = nextTime;
+    setCurrentTime(nextTime);
+    setDragTime(null);
+    setIsDragging(false);
   }
+
+  function handleLoadedMetadata(event: React.SyntheticEvent<HTMLAudioElement>) {
+    const audio = event.currentTarget;
+    const loadedDuration = Number(audio.duration || 0);
+
+    if (Number.isFinite(loadedDuration) && loadedDuration > 0) {
+      setDuration(loadedDuration);
+
+      try {
+        localStorage.setItem(DURATION_KEY, String(loadedDuration));
+      } catch {}
+    }
+
+    const savedProgress = readSavedProgress();
+    if (savedProgress > 0) {
+      const safeTime = clamp(savedProgress, 0, loadedDuration || savedProgress);
+      audio.currentTime = safeTime;
+      setCurrentTime(safeTime);
+    }
+
+    audio.playbackRate = readPlaybackRate();
+  }
+
+  function handleTimeUpdate(event: React.SyntheticEvent<HTMLAudioElement>) {
+    if (isDragging) return;
+    setCurrentTime(event.currentTarget.currentTime || 0);
+  }
+
+  async function handleTogglePlay() {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    try {
+      if (audio.paused) {
+        await audio.play();
+        setIsPlaying(true);
+      } else {
+        audio.pause();
+        setIsPlaying(false);
+      }
+    } catch {
+      setIsPlaying(false);
+    }
+  }
+
+  function handleSeekBy(amount: number) {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const max = Number.isFinite(audio.duration) ? audio.duration : duration;
+    const nextTime = clamp(audio.currentTime + amount, 0, max || 0);
+    audio.currentTime = nextTime;
+    setCurrentTime(nextTime);
+  }
+
+  const aboutText =
+    book?.summary ||
+    book?.bookDescription ||
+    "No summary available for this title yet.";
+
+  const aboutAuthorText =
+    book?.authorDescription ||
+    `${book?.author ?? "This author"} is featured in Summarist's library. Additional author details are not available in the API response for this title.`;
 
   if (loading) {
     return (
-      <div className={ui.page}>
-        <div className={`${ui.card} ${ui.pageCard}`}>
-          <div className={ui.hero}>
-            <h1 className={ui.h1}>Loading…</h1>
-            <p className={ui.muted}>Preparing your player.</p>
+      <div className={styles.page}>
+        <div className={styles.topBar}>
+          <div className={styles.searchShell}>
+            <input
+              className={styles.searchInput}
+              type="text"
+              value=""
+              readOnly
+              placeholder="Search for books"
+            />
+            <button
+              type="button"
+              className={styles.searchButton}
+              aria-label="Search"
+            >
+              <SearchIcon />
+            </button>
           </div>
-          <div className={ui.section}>
-            <p className={ui.muted}>Just a moment…</p>
-          </div>
+        </div>
+
+        <div className={styles.topDivider} />
+
+        <div className={styles.contentWrap}>
+          <div className={styles.titleSkeleton} />
+          <div className={styles.authorSkeleton} />
+          <div className={styles.sectionSkeleton} />
+          <div className={styles.sectionSkeletonTall} />
         </div>
       </div>
     );
@@ -138,113 +345,197 @@ export default function PlayerPage() {
 
   if (!book) {
     return (
-      <div className={ui.page}>
-        <div className={`${ui.card} ${ui.pageCard}`}>
-          <div className={ui.hero}>
-            <h1 className={ui.h1}>Not found</h1>
-            <p className={ui.muted}>We couldn’t load this book.</p>
-          </div>
-          <div className={ui.section}>
+      <div className={styles.page}>
+        <div className={styles.topBar}>
+          <form
+            className={styles.searchShell}
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <input
+              className={styles.searchInput}
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search for books"
+            />
             <button
-              className={ui.button}
-              onClick={() => router.push("/for-you")}
+              type="submit"
+              className={styles.searchButton}
+              aria-label="Search"
             >
-              Back to For You
+              <SearchIcon />
             </button>
-          </div>
+          </form>
+        </div>
+
+        <div className={styles.topDivider} />
+
+        <div className={styles.contentWrap}>
+          <h1 className={styles.emptyTitle}>
+            We couldn&apos;t load this book.
+          </h1>
+          <p className={styles.emptyText}>Try another title from For You.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={ui.page}>
-      <div className={`${ui.card} ${ui.pageCard}`}>
-        <div className={ui.hero}>
-          <div className={styles.headerRow}>
-            <img
-              src={book.imageLink || ""}
-              alt={book.title}
-              className={styles.smallCover}
-            />
-            <div>
-              <h1 className={ui.h1} style={{ marginBottom: 6 }}>
-                {book.title}
-              </h1>
-              <p className={ui.muted} style={{ margin: 0 }}>
-                {book.author}
-              </p>
-              <p className={ui.muted}>Playback speed: {rate}x</p>
+    <div className={styles.page}>
+      <div className={styles.topBar}>
+        <form
+          className={styles.searchShell}
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <input
+            className={styles.searchInput}
+            type="text"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            placeholder="Search for books"
+          />
+          <button
+            type="submit"
+            className={styles.searchButton}
+            aria-label="Search"
+          >
+            <SearchIcon />
+          </button>
+        </form>
+      </div>
+
+      <div className={styles.topDivider} />
+
+      <div className={styles.contentWrap}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>{book.title}</h1>
+          <p className={styles.author}>{book.author}</p>
+        </header>
+
+        <section className={styles.textSection}>
+          <h2 className={styles.sectionTitle}>What&apos;s it about?</h2>
+          <p className={styles.sectionBody}>{aboutText}</p>
+        </section>
+
+        <section className={styles.textSection}>
+          <h2 className={styles.sectionTitle}>About the author</h2>
+          <p className={styles.sectionBody}>{aboutAuthorText}</p>
+        </section>
+      </div>
+
+      <div className={styles.bottomPlayer}>
+        <div className={styles.playerInner}>
+          <div className={styles.bookMeta}>
+            {book.imageLink ? (
+              <img
+                src={book.imageLink}
+                alt={book.title}
+                className={styles.thumb}
+              />
+            ) : (
+              <div className={styles.thumbFallback} />
+            )}
+
+            <div className={styles.bookMetaText}>
+              <p className={styles.barTitle}>{book.title}</p>
+              <p className={styles.barAuthor}>{book.author}</p>
             </div>
           </div>
-        </div>
 
-        <div className={ui.section}>
-          <div className={styles.playerCard}>
-            <audio
-              ref={audioRef}
-              controls
-              src={book.audioLink}
-              onLoadedMetadata={(e) => {
-                const a = e.currentTarget;
-                const d = Number(a.duration || 0);
-                if (Number.isFinite(d) && d > 0) {
-                  setDuration(d);
-                  try {
-                    localStorage.setItem(DURATION_KEY, String(d));
-                  } catch {}
-                }
+          <div className={styles.controlsWrap}>
+            <button
+              type="button"
+              className={styles.ghostControl}
+              onClick={() => handleSeekBy(-10)}
+              aria-label="Back 10 seconds"
+            >
+              <BackTenIcon />
+            </button>
 
-                // resume playback
-                const saved = Number(localStorage.getItem(PROGRESS_KEY) || 0);
-                if (Number.isFinite(saved) && saved > 0) {
-                  a.currentTime = Math.min(saved, a.duration || saved);
-                }
-              }}
-              onTimeUpdate={(e) => {
-                const a = e.currentTarget;
-                setCurrent(a.currentTime || 0);
-              }}
-            />
+            <button
+              type="button"
+              className={styles.playControl}
+              onClick={handleTogglePlay}
+              aria-label={isPlaying ? "Pause audio" : "Play audio"}
+            >
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </button>
 
-            <div className={styles.controlsRow}>
-              <button className={ui.button} onClick={() => seekBy(-15)}>
-                -15s
-              </button>
-              <button className={ui.button} onClick={() => seekBy(15)}>
-                +15s
-              </button>
-
-              <div className={styles.time}>
-                <span>{formatTime(current)}</span>
-                <span className={ui.muted}>-{formatTime(remaining)}</span>
-              </div>
-            </div>
-
-            <input
-              className={styles.slider}
-              type="range"
-              min={0}
-              max={duration || 1}
-              step={0.5}
-              value={Math.min(current, duration || current)}
-              onChange={(e) => {
-                const next = Number(e.target.value);
-                setCurrent(next);
-                const a = audioRef.current;
-                if (a) a.currentTime = next;
-              }}
-            />
+            <button
+              type="button"
+              className={styles.ghostControl}
+              onClick={() => handleSeekBy(10)}
+              aria-label="Forward 10 seconds"
+            >
+              <ForwardTenIcon />
+            </button>
           </div>
 
-          <div className={styles.summaryBlock}>
-            <h2 className={ui.h2}>Summary</h2>
-            <p className={styles.summaryText}>
-              {book.summary || book.bookDescription || "No summary available."}
-            </p>
+          <div className={styles.rightPlayer}>
+            <div className={styles.timeMeta}>
+              <span>{formatTime(displayedTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+
+            <div className={styles.progressRow}>
+              <div className={styles.progressTrack} />
+              <div
+                className={styles.progressFill}
+                style={{ width: `${progressPercent}%` }}
+              />
+              <input
+                type="range"
+                min={0}
+                max={duration || 1}
+                step={0.1}
+                value={Math.min(displayedTime, duration || displayedTime)}
+                className={styles.slider}
+                onChange={(event) => {
+                  const nextTime = Number(event.target.value);
+                  setIsDragging(true);
+                  setDragTime(nextTime);
+                }}
+                onMouseUp={(event) => {
+                  const nextTime = Number(
+                    (event.target as HTMLInputElement).value,
+                  );
+                  commitSeek(nextTime);
+                }}
+                onTouchEnd={(event) => {
+                  const nextTime = Number(
+                    (event.target as HTMLInputElement).value,
+                  );
+                  commitSeek(nextTime);
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
+
+      <audio
+        ref={audioRef}
+        src={book.audioLink}
+        onLoadedMetadata={handleLoadedMetadata}
+        onTimeUpdate={handleTimeUpdate}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => {
+          setIsPlaying(false);
+          setCurrentTime(0);
+          setDragTime(null);
+
+          if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+          }
+
+          try {
+            localStorage.setItem(PROGRESS_KEY, "0");
+          } catch {}
+        }}
+        preload="metadata"
+        className={styles.hiddenAudio}
+      />
     </div>
   );
 }

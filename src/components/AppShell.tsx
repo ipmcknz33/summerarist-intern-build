@@ -1,31 +1,36 @@
 "use client";
 
+import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 import SearchBar from "./SearchBar";
-import styles from "../app/layout.module.css";
+import styles from "./AppShell.module.css";
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+type Props = {
+  children: ReactNode;
+};
+
+export default function AppShell({ children }: Props) {
   const pathname = usePathname();
 
-  const hideShell = pathname === "/" || pathname?.startsWith("/choose-plan");
+  const hideShell = pathname === "/" || pathname === "/choose-plan";
 
   if (hideShell) {
-    return <main className={styles.mainSolo}>{children}</main>;
+    return <>{children}</>;
   }
 
   return (
-    <div className={styles.root}>
-      <aside className={styles.sidebar}>
-        <Sidebar />
-      </aside>
+    <div className={styles.appShell}>
+      <Sidebar />
 
-      <div className={styles.content}>
-        <div className={styles.topbar}>
-          <SearchBar />
-        </div>
+      <div className={styles.mainArea}>
+        <header className={styles.topbar}>
+          <div className={styles.searchWrap}>
+            <SearchBar />
+          </div>
+        </header>
 
-        <main className={styles.main}>{children}</main>
+        <main className={styles.content}>{children}</main>
       </div>
     </div>
   );
